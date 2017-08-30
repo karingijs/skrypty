@@ -1,0 +1,100 @@
+#░█▀▀█ █▀▀▄ ▀▀█▀▀ █░░█ ▒█░░░ █▀▀█ █▀▀▀ █▀▀█ █░░█ ▀▀█▀▀   +++++++
+#▒█▄▄█ █░░█ ░░█░░ █▄▄█ ▒█░░░ █░░█ █░▀█ █░░█ █░░█ ░░█░░   +++++++
+#▒█░▒█ ▀░░▀ ░░▀░░ ▄▄▄█ ▒█▄▄█ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ░▀▀▀ ░░▀░░   +++++++
+#====================================================================
+#	                 █  Plugin: AntyLogout+       █
+#	                 █  Made by : karingijs272    █
+#	                 █  Version : 1 Release       █
+#====================================================================
+# Copyright © Text Skripts Karingijs. All rights reserved.
+# Discord: https://discord.gg/gx4q3EP
+# Date : 2017
+#====================================================================
+on script load:
+	if {LOADED} is not set:
+		set {LOADED} to true
+		set yaml value "language" from file "AntyLogoutSettings.yml" to "PL"
+		set yaml value "AntyLogout.Time" from file "AntyLogoutSettings.yml" to "10"
+		set yaml value "AntyLogout.ItemsDrop" from file "AntyLogoutSettings.yml" to "true"
+		set yaml value "Message.Damage.Fight" from file "AntyLogoutLanguages/PL.yml" to "&aJestes podczas walkig z &c<attacker>&a mozliwosc wylogowanie sie za &c<time>&a sekund."
+		set yaml value "Message.End.Fight" from file "AntyLogoutLanguages/PL.yml" to "&aJuz nie jestes podczas walki mozez sie wylogowac!"
+		set yaml value "Message.Command.Fight" from file "AntyLogoutLanguages/PL.yml" to "&cNie mozez uzyc tej komendy podczas walki!"
+		set yaml value "Message.LoggedOut.Fight" from file "AntyLogoutLanguages/PL.yml" to "&c&l<player> wylogowal sie podczas walki!"
+		set yaml value "Message.Logout.Time" from file "AntyLogoutLanguages/PL.yml" to "&aMozliwosc wylogowanie sie za &c<time> &aSekund."
+		set yaml value "Message.Damage.Fight" from file "AntyLogoutLanguages/ENG.yml" to "&aYou are in fight with &c<attacker>&a logout time &c<time>&a seconds."
+		set yaml value "Message.End.Fight" from file "AntyLogoutLanguages/ENG.yml" to "&aYou are no more in fight"
+		set yaml value "Message.Command.Fight" from file "AntyLogoutLanguages/ENG.yml" to "&cYou can't use this command in fight!"
+		set yaml value "Message.LoggedOut.Fight" from file "AntyLogoutLanguages/ENG.yml" to "&c&l<player> logged out from fight!"
+		set yaml value "Message.Logout.Time" from file "AntyLogoutLanguages/ENG.yml" to "&aLogout possibletility in &c<time> &aseconds."
+	wait 1 tick
+	set {_language} to yaml value "language" from file "AntyLogoutSettings.yml"
+	set {ANTYLOGOUT::LOGTIME} to yaml value "AntyLogout.Time" from file "AntyLogoutSettings.yml"
+	set {ANTYLOGOUT::DROP} to yaml value "AntyLogout.ItemsDrop" from file "AntyLogoutSettings.yml"
+	wait 1 tick
+	set {ANTYLOGOUT::MESSAGE::DAMAGE::FIGHT} to yaml value "Message.Damage.Fight" from file "AntyLogoutLanguages/%{_language}%.yml"
+	set {ANTYLOGOUT::MESSAGE::LOGOUTEND} to yaml value "Message.End.Fight" from file "AntyLogoutLanguages/%{_language}%.yml"
+	set {ANTYLOGOUT::MESSAGE::COMMAND} to yaml value "Message.Command.Fight" from file "AntyLogoutLanguages/%{_language}%.yml"
+	set {ANTYLOGOUT::MESSAGE::LOGGEDOUT} to yaml value "Message.LoggedOut.Fight" from file "AntyLogoutLanguages/%{_language}%.yml"
+	set {ANTYLOGOUT::MESSAGE::TIMELOGOUT} to yaml value "Message.Logout.Time" from file "AntyLogoutLanguages/%{_language}%.yml"
+on damage:
+	if attacker is a player:
+		if victim is a player:
+			set {ANTYLOGOUT::CZAS::%victim%} to {ANTYLOGOUT::LOGTIME}
+			set {ANTYLOGOUT::CZAS::%attacker%} to {ANTYLOGOUT::LOGTIME}
+			if {ANTYLOGOUT::WALKA::%victim%} is not set:
+				set {ANTYLOGOUT::WALKA::%victim%} to true
+				set {_message} to {ANTYLOGOUT::MESSAGE::DAMAGE::FIGHT}
+				replace all "<time>" with "%{ANTYLOGOUT::LOGTIME}%" in {_message}
+				replace all "<victim>" with "%victim%" in {_message}
+				replace all "<attacker>" with "%attacker%" in {_message}
+				send "%{_message}%" to victim
+				execute console command "pvptimer %victim%"
+			if {ANTYLOGOUT::WALKA::%attacker%} is not set:
+				set {ANTYLOGOUT::WALKA::%attacker%} to true
+				set {_message} to {ANTYLOGOUT::MESSAGE::DAMAGE::FIGHT}
+				replace all "<time>" with "%{ANTYLOGOUT::LOGTIME}%" in {_message}
+				replace all "<victim>" with "%victim%" in {_message}
+				replace all "<attacker>" with "%attacker%" in {_message}
+				send "%{_message}%" to attacker
+				execute console command "pvptimer %attacker%"
+			stop
+command /pvptimer [<player>]:
+	executable by: console
+	trigger:
+		set {_player} to arg 1
+		loop 1000 times:
+			wait 1 second
+			subtract 1 from {ANTYLOGOUT::CZAS::%{_player}%}
+			if {ANTYLOGOUT::CZAS::%{_player}%} is smaller than 0:
+				delete {ANTYLOGOUT::CZAS::%{_player}%}
+				delete {ANTYLOGOUT::WALKA::%{_player}%}
+				set {_message} to {ANTYLOGOUT::MESSAGE::LOGOUTEND}
+				send "%{_message}%" to {_player}
+				stop
+on quit:
+	if {ANTYLOGOUT::CZAS::%player%} is set:
+		if {ANTYLOGOUT::DROP} is "true":
+			set {_loc} to location of player
+			loop all items in player's inventory:
+				remove loop-item from player's inventory
+				drop loop-item at {_loc}
+				kill player
+			set {_message} to {ANTYLOGOUT::MESSAGE::LOGGEDOUT}
+			replace all "<player>" with "%player%" in {_message}
+			send "%{_message}%" to all players
+			stop
+		set {_message} to {ANTYLOGOUT::MESSAGE::LOGGEDOUT}
+		replace all "<player>" with "%player%" in {_message}
+		send "%{_message}%" to all players
+		stop
+on command:
+	if {ANTYLOGOUT::CZAS::%player%} is set:
+		if command is not "logout":
+			set {_message} to {ANTYLOGOUT::MESSAGE::COMMAND}
+			send "%{_message}%"
+command /logout:
+	trigger:
+		if player has permission "antylogout.logout"
+		set {_message} to {ANTYLOGOUT::MESSAGE::TIMELOGOUT}
+		replace all "<time>" with "%{ANTYLOGOUT::CZAS::%player%}%" in {_message}
+		send "%{_message}%"
