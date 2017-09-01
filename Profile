@@ -1,0 +1,188 @@
+#░█▀▀█ ░█▀▀█ ░█▀▀▀█ ░█▀▀▀ ▀█▀ ░█─── ░█▀▀▀ 
+#░█▄▄█ ░█▄▄▀ ░█──░█ ░█▀▀▀ ░█─ ░█─── ░█▀▀▀ 
+#░█─── ░█─░█ ░█▄▄▄█ ░█─── ▄█▄ ░█▄▄█ ░█▄▄▄ 
+#====================================================================
+#	          █  Plugin: Statystyki                     █
+#	          █  Made by : karingijs272 and Kraftowy    █
+#	          █  Version : 1.0 Pre-Release              █
+#			  █  Discord : https://discord.gg/gx4q3EP   █
+#====================================================================
+# Copyright © 2017 Text Skripts Karingijs. All rights reserved.
+#====================================================================
+
+command /profil [<player>] [<string>]:
+	aliases: profile, profils, info, staty, stats, statystyki
+	trigger:
+		wait 1 tick
+		if arg 1 is not set:
+			set {_player} to the player
+		else:
+			set {_player} to arg 1
+		if arg 2 is not set:
+			open chest with 3 rows named "&c&lProfil %{_player}%" to player #to close then run [make player execute "/profil %{_player}% podstawowe"]
+			wait 1 tick
+			format slot 11 of player with iron chestplate named "&6&lStaty PvP" to close then run [make player execute "/profil %{_player}% Pvp"]
+			format slot 13 of player with gold ingot named "&6&lZaawansowane" to close then run [make player execute "/profil %{_player}% zaawansowane"]
+			format slot 9 of player with apple named "&6&lJedzenie" to close then run [make player execute "/profil %{_player}% Jedzenie"]
+			format slot 17 of player with bedrock named "&6&lWykopane ORE na traktore" with lore "Ile czego wykopano" to close then run [make player execute "/profil %{_player}% dropy"]
+			format slot 15 of player with diamond sword named "&6&lZabojstwa" with lore "Ile czego zabito" to close then run [make player execute "/profil %{_player}% pvp"]
+			format slot 26 of player with redstone named "&cZamknij" with lore "&fZamyka menu" to close
+		if arg 2 is "Jedzenie":#tylko nie wiem jaki variables do tego
+			wait 0.1 second
+			open chest with 3 rows named "&c&lJedzenie %{_player}%" to player
+			wait 1 tick
+			format slot 0 of player with apple named "&6&lJablko" with lore "&6&lZjedzono: %{PROFIL::JEDZENIE::APPLE::%{_player}%}%" to be unstealable
+			format slot 1 of player with golden apple named "&6&lZlote Jablko" with lore "&6&lZjedzono: %{PROFIL::JEDZENIE::GOLDAPPLE::%{_player}%}%" to be unstealable
+			format slot 2 of player with enchanted golden apple named "&6&lKox Jablko" with lore "&6&lZjedzono: %{PROFIL::JEDZENIE::KOXAPPLE::%{_player}%}%" to be unstealable
+			format slot 3 of player with steak named "&6&lSteak" with lore "&6&lZjedzono: %{PROFIL::JEDZENIE::STEAK::%{_player}%}%" to be unstealable
+			format slot 26 of player with redstone named "&cZamknij" with lore "&fZamyka menu" to close	
+		if arg 2 is "zaawansowane":
+			wait 0.1 second
+			open chest with 3 rows named "&c&lZaawansowane %{_player}%" to player
+			wait 1 tick
+			format slot 0 of player with clock named "&6&lCzas gry" with lore "&f%{PROFIL::CzasGry::%{_player}%::Godzina}%&ch &f%{PROFIL::CzasGry::%{_player}%}%&cm" to be unstealable
+			format slot 1 of player with diamond named "&6&lSpalone kalorie" with lore "&2&l%{PROFILE::CHUNGERTOTAL::%{_player}%}%" to be unstealable
+			format slot 26 of player with redstone named "&cZamknij" with lore "&fZamyka menu" to close
+			format slot 2 of player with paper named "&6&lIlosc wejsc na serwer" with lore "&f%{PROFIL::Dolacz::%{_player}%}%" to be unstealable
+			#Sredni dystans tu dodam
+		if arg 2 is "dropy":
+			wait 0.1 second
+			open chest with 3 rows named "&c&lDROPY %{_player}%" to player
+			wait 1 tick
+			format slot 0 of player with diamond ore named "&6&lDiament" with lore "&fWykopano: &c%{PROFIL::Break::diamond::%{_player}%}%" to be unstealable
+			format slot 1 of player with gold ore named "&6&lZloto" with lore "&fWykopano: &c%{PROFIL::Break::gold::%{_player}%}%" to be unstealable
+			format slot 2 of player with iron ore named "&6&lZelazo" with lore "&fWykopano: &c%{PROFIL::Break::iron::%{_player}%}%" to be unstealable
+			format slot 3 of player with coal ore named "&6&lWegiel" with lore "&fWykopano: &c%{PROFIL::Break::coal::%{_player}%}%" to be unstealable
+			format slot 4 of player with lapis lazuli ore named "&6&lLapis" with lore "&fWykopano: &c%{PROFIL::Break::lapis::%{_player}%}%" to be unstealable
+			format slot 5 of player with inactive redstone ore named "&6&lRedstone" with lore "&fWykopano: &c%{PROFIL::Break::redstone::%{_player}%}%" to be unstealable
+			format slot 6 of player with emerald ore named "&6&lSzmaragd" with lore "&fWykopano: &c%{PROFIL::Break::emerald::%{_player}%}%" to be unstealable
+			format slot 8 of player with stone named "&6&lKamień" with lore "&fWykopano: &c%{PROFIL::Break::stone::%{_player}%}%" to be unstealable			
+			format slot 26 of player with redstone named "&cZamknij" with lore "&fZamyka menu" to close	
+		if arg 2 is "Pvp":
+			wait 0.1 second
+			open chest with 3 rows named "&cStaty PVP %{_player}%" to player
+			wait 1 tick
+			format slot 2 of player with zombie head named "&6Zabite Zombie" with lore "&f%{PROFIL::KILLS::zombie::%{_player}%}%" to be unstealable
+			format slot 3 of player with mob head item named "&6Zabite Szkielety" with lore "&f%{PROFIL::KILLS::skeeleton::%{_player}%}%" to be unstealable
+			format slot 4 of player with player head named "&6Gracze" with lore "&cKill: &f%{PROFIL::KILLS::Player::%{_player}%}%||&cDeaths: &f%{PROFIL::DEATH::Player::%{_player}%}%" to close
+			format slot 5 of player with creeper head item named "&6Zabite Creepery" with lore "&f%{PROFIL::KILLS::creeper::%{_player}%}%" to be unstealable
+			format slot 6 of player with Spider Eye named "&6Zabije Pajaki" with lore "&f%{PROFIL::KILLS::spider::%{_player}%}%" to be unstealable
+			format slot 26 of player with redstone named "&cZamknij" with lore "&fZamyka menu" to close	
+			format slot 9 of player with blaze powder named "&2&l&oM" to be unstealable
+			format slot 10 of player with blaze powder named "&2&l&oo" to be unstealable
+			format slot 11 of player with blaze powder named "&2&l&or" to be unstealable
+			format slot 12 of player with blaze powder named "&2&l&oe" to be unstealable
+			format slot 14 of player with blaze powder named "&2&l&oS" to be unstealable
+			format slot 15 of player with blaze powder named "&2&l&oo" to be unstealable
+			format slot 16 of player with blaze powder named "&2&l&oo" to be unstealable
+			format slot 17 of player with blaze powder named "&2&l&on" to be unstealable
+
+on join:
+	if {PROFIL::okee::%player%} is not set:
+		set {PROFIL::JEDZENIE::KOXAPPLE::%player%} to 0  
+		set {PROFIL::JEDZENIE::GOLDAPPLE::%player%} to 0
+		set {PROFIL::JEDZENIE::APPLE::%player%} to 0
+		set {PROFIL::JEDZENIE::STEAK::%player%} to 0
+		set {PROFIL::Break::diamond::%player%} to 0 
+		set {PROFIL::Break::iron::%player%} to 0
+		set {PROFIL::Break::gold::%player%} to 0
+		set {PROFIL::Break::coal::%player%} to 0
+		set {PROFIL::Break::redstone::%player%} to 0
+		set {PROFIL::Break::emerald::%player%} to 0
+		set {PROFIL::Break::lapis::%player%} to 0
+		set {PROFIL::Break::stone::%player%} to 0
+		set {PROFIL::Dolacz::%player%} to 0
+		set {PROFIL::KILLS::zombie::%player%} to 0
+		set {PROFIL::KILLS::skeeleton::%player%} to 0
+		set {PROFIL::KILLS::creeper::%player%} to 0
+		set {PROFIL::KILLS::spider::%player%} to 0
+		set {PROFIL::KILLS::zombie::%player%} to 0
+		set {PROFIL::KILLS::skeeleton::%player%} to 0  
+		set {PROFIL::KILLS::creeper::%player%} to 0
+		set {PROFIL::KILLS::spider::%player%} to 0
+		set {PROFIL::DEATH::Player::%player%} to 0
+		set {PROFIL::KILLS::Player::%player%} to 0
+		set {PROFILE::CHUNGERTOTAL::%player%} to 0
+		set {PROFILE::CHUNGEROLD::%player%} to 0
+		set {PROFILE::CHUNGERTOTAL::%player%} to 0
+		set {PROFIL::CzasGry::%player%::Godzina} to 0
+		set {PROFIL::CzasGry::%player%} to 0
+		set {PROFIL::okee::%player%} to true  
+on join:
+	add 1 to {PROFIL::Dolacz::%player%}
+	
+every 1 minute:
+	loop all players:
+		if {PROFIL::CzasGry::%loop-player%} is not set:
+			set {PROFIL::CzasGry::%loop-player%} to 1
+		else:
+			add 1 to {PROFIL::CzasGry::%loop-player%}
+			if {PROFIL::CzasGry::%loop-player%} is 60:
+				add 1 to {PROFIL::CzasGry::%loop-player%::Godzina}
+				set {PROFIL::CzasGry::%loop-player%} to 0
+
+on eat:	
+	if player's tool is apple:
+		add 1 to {PROFIL::JEDZENIE::APPLE::%player%}
+	else if player's tool is steak:
+		add 1 to {PROFIL::JEDZENIE::STEAK::%player%}
+	else if player's tool is golden apple:
+		add 1 to {PROFIL::JEDZENIE::GOLDAPPLE::%player%}
+	else if player's tool is enchanted golden apple:
+		add 1 to {PROFIL::JEDZENIE::KOXAPPLE::%player%}
+		
+
+on break of stone:
+	add 1 to {PROFIL::Break::stone::%player%}
+		
+on break of any ore:
+	if event-block is diamond ore:
+		add 1 to {PROFIL::Break::diamond::%player%}
+	if event-block is iron ore:
+		add 1 to {PROFIL::Break::iron::%player%}
+	if event-block is gold ore:
+		add 1 to {PROFIL::Break::gold::%player%}
+	if event-block is coal ore:
+		add 1 to {PROFIL::Break::coal::%player%}
+	if event-block is redstone ore:
+		add 1 to {PROFIL::Break::redstone::%player%}
+	if event-block is emerald ore:
+		add 1 to {PROFIL::Break::emerald::%player%}
+	if event-block is lapis lazuli ore:
+		add 1 to {PROFIL::Break::lapis::%player%}
+
+on death:
+	if victim is a player:
+		add 1 to {PROFIL::DEATH::Player::%victim%}
+		if attacker is a player:
+			add 1 to {PROFIL::KILLS::Player::%attacker%}
+
+
+on hunger bar change:
+	set {_jedzenie} to player's food level
+	if {PROFILE::CHUNGEROLD::%player%} is not set:
+		set {PROFILE::CHUNGEROLD::%player%} to player's food level
+	set {PROFILE::CHUNGEROLD::%player%} to "%{PROFILE::CHUNGEROLD::%player%}%" parsed as number
+	set {_jedzenie} to "%{_jedzenie}%" parsed as number
+	if {_jedzenie} is smaller than {PROFILE::CHUNGEROLD::%player%}:
+		add 0.5 to {PROFILE::CHUNGERTOTAL::%player%}
+		set {PROFILE::CHUNGERTOTAL::%player%} to "%{PROFILE::CHUNGERTOTAL::%player%}%" parsed as number
+		set {PROFILE::CHUNGEROLD::%player%} to player's food level
+	else:
+		set {PROFILE::CHUNGEROLD::%player%} to player's food level
+
+on death:
+	if attacker is a player:
+		if victim is zombie:
+			add 1 to {PROFIL::KILLS::zombie::%attacker%}
+		if victim is skeleton:
+			add 1 to {PROFIL::KILLS::skeeleton::%attacker%}
+		if victim is creeper:
+			add 1 to {PROFIL::KILLS::creeper::%attacker%}
+		if victim is spider:
+			add 1 to {PROFIL::KILLS::spider::%attacker%}
+			
+		
+			
+			
+# End of Scrit
